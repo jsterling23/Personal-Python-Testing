@@ -1,0 +1,403 @@
+You may have noticed that the set representations of the gender and party columns on the previous two screens contained an empty string (''). This indicates that one or more of the rows in the data have missing values in those columns. Missing values are very common in real world data analysis, since the people compiling the datasets often don't have full information.
+
+You can use one of the following strategies to address missing data:
+
+Remove any rows that contain missing data.
+Populate the empty fields with a specified value.
+Populate the empty fields with a calculated value.
+Use analysis techniques that work with missing data.
+We'll work with missing data in more depth later on, but for now, we'll focus on populating empty fields with a specified value.
+
+Here's how we could replace any missing values in the party column with the string No Party:
+
+
+rows = [
+    ["Bassett", "Richard", "1745-04-02", "M", "sen", "DE", "Anti-Administration"],
+    ["Bland", "Theodorick", "1742-03-21", "", "rep", "VA", ""]
+]
+for row in rows:
+    if row[6] == "":
+        row[6] = "No Party"
+Step by step, we:
+
+Loop through each row in rows.
+Check whether the party column (index 6) has a missing value.
+If so, replace it with the string No Party.
+Next, we'll populate the empty fields in the gender column. Most U.S. legislators have historically been men (although this is changing), so we'll replace any missing values with the string M.
+
+Instructions
+
+Replace any missing values in the gender column of legislators with the string M.
+When you're done, the gender column of legislators should only contain the values F and M.
+
+
+for i in legislators:
+    if i[3] == '':
+        i[3] = 'M'
+
+
+=============================================================================================
+
+
+While we're looking for the most common names of U.S. legislators, the year of birth could also be of interest. For example, we could use that field to identify historical naming trends, and explore how popular names have changed from 1820 to today.
+
+As you may have noticed, the birthday column has the format 1820-01-02, which is hard to work with. However, it's common to reformat values to simplify them. In this case, we can split the date into its component parts:
+
+
+date = "1820-01-02"
+parts = date.split("-")
+print(parts)
+This will create a list ["1820", "01", "02"]. The first item in the list is the year the legislator was born, the second is the month, and the last is the day.
+
+Instructions
+
+Create an empty list named birth_years.
+Loop through each item in legislators.
+
+Split the value in the birthday column on the - character.
+Assign the result to parts.
+Extract the first item in parts and append it to birth_years.
+At the end, birth_years will be a list containing the birth years of all the legislators in legislators.
+
+
+birth_years = []
+
+for i in legislators:
+    date = i[2]
+    parts = date.split("-")
+    birth_years.append(parts[0])
+print(birth_years)
+
+
+
+=================================================================================================================
+
+
+
+Converting a column to a different data type is a common operation in data analysis. For example, we just extracted the year on the previous screen, but it's in string form. To find the average year in which legislators were born, we'll need to convert the data to integers first. We can perform this conversion with the int() function. The only challenge is that the year column has missing values. If we try to convert a missing value, we'll get an error:
+
+
+int('')
+The code above will cause a ValueError, because an empty string can't be converted to an integer.
+
+Not all errors should halt execution, though. Sometimes we expect a certain type of error, and want to handle it in a specific way that allows the code to complete. We can manage errors with something known as a try/except block. If you surround the code that causes an error with a try/except block, the error will be handled, and the code will continue to run:
+
+
+try:
+    int('')
+except Exception:
+    print("There was an error")
+In the example above, the Python interpreter will try to run int(''), and generate a ValueError. Instead of stopping the code from executing, it will be handled by the except statement, which will print the message There was an error. The Python interpreter will continue to run any lines of code that come after the except statement.
+
+Instructions
+
+Convert the string hello to a float with the float() function.
+Wrap the code that does the conversion in a try/except block.
+In the except statement, print out Error converting to float..
+
+try:
+    float("hello")
+except Exception:
+    print("Can not change to float.")
+
+=================================================================================================================
+
+
+When the Python interpreter generates an exception, it actually creates an instance of the Exception class. This class has certain properties that help us debug the error. We can access the instance of the Exception class in the except statement body:
+
+
+try:
+    int('')
+except Exception as exc:
+    print(type(exc))
+In the example above, we use the as statement to assign the instance of the Exception class to the variable exc. We can then access the variable in the except statement body. Printing type(exc) will display the type of Exception that occured in the try statement body.
+
+We can also convert the Exception class to a string and print out the error message:
+
+
+try:
+    int('')
+except Exception as exc:
+    print(str(exc))
+This will print a message that will help us debug the error.
+
+Instructions
+
+Write a statement that attempts to convert an empty string to an integer, and wrap it in a try/except block.
+Capture the Exception instance.
+Print the type of the Exception instance.
+Convert the Exception instance to a string and print it out.
+
+try:
+    int('')
+except Exception as exc:
+    print(str(exc))
+
+
+
+=================================================================================================================
+
+
+
+On the previous screen, we printed a message each time an error occurred:
+
+
+try:
+    int('')
+except Exception:
+    print("There was an error")
+However, there are times when we don't want to do anything specific to handle errors; we just want the code to keep running. This is common when looping over a long list, and performing the same operation multiple times. In cases like this, printing lots of errors messages would be fairly annoying. For example, running the following code results in many errors:
+
+
+numbers = [1,2,3,4,5,6,7,8,9,10]
+for i in numbers:
+    try:
+        int('')
+    except Exception:
+        print("There was an error")
+Unfortunately, we can't just leave out the print statement to avoid this, since that would cause an error:
+
+
+numbers = [1,2,3,4,5,6,7,8,9,10]
+for i in numbers:
+    try:
+        int('')
+    except Exception:
+That's because any Python statement that ends in a colon (:) needs to have an indented body below it. Instead, we can use the pass keyword to avoid generating an error:
+
+
+try:
+    int('')
+except Exception:
+    pass
+While the pass keyword doesn't actually do anything, it's a valid statement body. It offers a solution when we don't want an error to stop code execution, but also don't want to do anything in the except statement body.
+
+Let's create a new list containing only the integer values from converted_years. We can use a pass statement to skip the values that the int() function can't convert.
+
+Instructions
+
+Write a for loop that iterates over birth_years, using the iterator variable year.
+In the try block:
+Convert year to an integer using the int() function and assign to int_year.
+Append the converted year value to converted_years.
+In the except block:
+Add a pass statement.
+
+
+
+int_years = []
+
+for year in birth_years:
+    try:
+        int_years.append(int(year))
+    except Exception:
+        pass
+print(int_years)
+
+
+=================================================================================================================
+
+
+Let's convert all of the birth years in legislators to integers. To change the items in a list of lists, we need to loop over the top-level list (items):
+
+
+items = [[1, "1", 2],[2, "", 3],[5, "5", 3]]
+
+​
+for item in items:
+    item[1] = int(item[1])
+The above code will modify the second element in each item (embedded list). In other words, it will convert all of the values in the second column of items to integers.
+
+Loop through each row in legislators.
+Parse the birth year from the birthday column.
+Convert the birth year to an integer, and assign it to birth_year.
+Wrap this code in a try/except block.
+If there's an exception, assign 0 to birth_year.
+Append birth_year to the row with the append() method.
+When finished, legislators should have an extra column for birth year.
+
+
+---------wrong way to do it----------
+for row in legislators:
+    date = row[2]
+    birth_year = []
+    
+    try:
+        date_split = date.split("-")
+        date_str = date_split[0]
+        birth_year.append(int(date_str))
+    except Exception:
+        birth_year.append(int(0)
+    row.append(birth_year)
+    birth_year = []
+
+
+--------right way to do it------------
+for row in legislators:
+    birthday = row[2]
+    birth_year = birthday.split("-")[0]
+    
+    try:
+        birth_year = int(birth_year)
+    except Exception:
+        birth_year = 0
+    row.append(birth_year)
+    
+
+
+
+=================================================================================================================
+
+
+We finished parsing the birth years to integers, but now we have several birth years with the value 0. Here are the first few items in the birth_year column of legislators:
+
+
+[1745,
+ 1742,
+ 1743,
+ 1730,
+ 1739,
+ 0,
+ 1738,
+ 1745,
+ 1748,
+ ...
+]
+While exploring the dataset, you may have noticed that the legislators appear in roughly chronological order. We can use this knowledge to populate the missing values intelligently.
+
+Earlier, we replaced missing values with a fixed value M. This time, because the values generally appear in chronological order, we can loop through each year and replace any 0 values with the values from the previous rows.
+
+By doing this, we'll make sure each legislator without a birth year is assigned one that's relatively close to the actual date.
+
+Instructions
+
+Create a variable called last_value, and set it to 1.
+Loop through each row in legislators.
+If the year column (index 7) equals 0, replace it with last_value.
+Assign the value of the year column (index 7) to last_value.
+After the code runs, each row previously containing 0 for birth_year column will now instead have the previous row's value for the same column.
+
+
+---------- DID it right -----------
+last_value = 1
+
+for row in legislators:
+    if row[7] == 0:
+        row[7] = last_value
+    last_value = row[7]
+
+
+
+=================================================================================================================
+
+
+
+Error Handling: Takeaways
+by Dataquest Labs, Inc. - All rights reserved © 2018
+Syntax
+SETS
+Transforming a list into a set:
+
+animals = ["Dog", "Cat", "Hippo", "Dog", "Cat", "Dog", "Dog", "Cat"]
+unique_animals = set(animals)
+
+Displaying the set:
+
+`{'Hippo', 'Cat', 'Dog'}`
+
+Adding items to a set:
+
+unique_animals.add("Tiger")
+
+Removing items from a set:
+
+unique_animals.remove("Dog")
+
+Converting a set into a list:
+
+list(unique_animals)
+
+DEALING WITH MISSING VALUES AND PARSING DATA
+To replace missing values in the party column:
+
+rows = [
+    ["Bassett", "Richard", "1745-04-02", "M", "sen", "DE", "Anti-Administration"],
+    ["Bland", "Theodorick", "1742-03-21", "", "rep", "VA", ""]
+]
+for row in rows:
+    if row[6] == "":
+        row[6] = "No Party"
+
+To split a date into its component parts:
+
+date = "1820-01-02"
+parts = date.split("-")
+print(parts)
+
+TRY/EXCEPT BLOCKS
+To handle our error and allow our code to run, use a try/except block:
+
+try:
+    int('')
+except Exception:
+    print("There was an error")
+
+To add an exception instance:
+
+try:
+    int('')
+except Exception as exc:
+    print(type(exc))
+
+To convert the Exception class to a string and print out the error message:
+
+try:
+    int('')
+except Exception as exc:
+    print(str(exc))
+
+USING THE PASS KEYWORD
+When we don't want anything in the except statement body, we can use pass:
+
+try:
+    int('')
+except Exception:
+    pass
+
+CONVERT BIRTH YEARS TO INTEGERS
+To convert a column within a list of lists from a string to integer:
+
+items = [          
+    [1, "1", 2],    
+    [2, "2", 3],
+    [5, "5", 3]
+]
+for item in items:
+    item[1] = int(item[1])
+
+FILL IN YEARS WITHOUT A VALUE
+To replace invalid values in our list of lists:
+
+last_value = 1
+for row in legislators:
+    if row[7] == 0:
+        row[7] = last_value
+    last_value = row[7]
+
+Concepts
+A set is a data type, similar to a list, except each element is unique. If you add an element to a set that it already contains, the set will ignore it.
+When exploring a dataset, it's always a good idea to look for:
+
+Missing data
+Values that don't make intuitive sense
+Recurring themes
+To address missing data:
+
+Remove any rows with missing data
+Populate empty field with specified values
+Populate empty fields with calculated value
+Use analysis techniques to work with missing data
+Resources
+Python Documentation on Error Handling
+https://docs.python.org/3/tutorial/errors.html
+
